@@ -1,0 +1,13 @@
+{
+   <bash>
+   Memcheck:Leak
+   ...
+   obj:/usr/bin/bash
+}
+
+{
+   <travis-dash>
+   Memcheck:Leak
+   ...
+   obj:/bin/dash
+}

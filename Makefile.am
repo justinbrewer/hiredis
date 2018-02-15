@@ -118,3 +118,8 @@ hiredis_example_qt_LDADD = libhiredis.la
 
 SUFFIXES = .h _moc.cpp
 endif
+
+VALGRIND_FLAGS = --gen-suppressions=all
+VALGRIND_memcheck_FLAGS = --track-origins=yes --leak-check=full --show-reachable=no
+VALGRIND_SUPPRESSIONS_FILES = $(srcdir)/.valgrind.supp
+@VALGRIND_CHECK_RULES@

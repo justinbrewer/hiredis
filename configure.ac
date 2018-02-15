@@ -48,6 +48,9 @@ AC_PROG_MAKE_SET
 AM_PROG_AR
 AC_PROG_SED
 
+AX_VALGRIND_DFLT([sgcheck], [off]) # Disable sgcheck by default
+AX_VALGRIND_CHECK
+
 LT_INIT([win32-dll])
 
 # Checks for header files.
