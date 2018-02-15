@@ -38,11 +38,7 @@
 #include <sys/time.h> /* for struct timeval */
 #include <stdint.h> /* uintXX_t, etc */
 #include "sds.h" /* for sds */
-
-#define HIREDIS_MAJOR 0
-#define HIREDIS_MINOR 14
-#define HIREDIS_PATCH 0
-#define HIREDIS_SONAME 0.14
+#include "hiredis-version.h"
 
 /* Connection type can be blocking or non-blocking and is set in the
  * least significant bit of the flags field in redisContext. */

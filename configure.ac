@@ -1,9 +1,9 @@
 m4_define([_MAJOR], [0])
-m4_define([_MINOR], [13])
-m4_define([_PATCH], [3])
+m4_define([_MINOR], [14])
+m4_define([_PATCH], [0])
 
 # version-info a:b:c = soname (a-c).c.b
-m4_define([_VINFO],[13:0:13])
+m4_define([_VINFO],[14:0:14])
 
 AC_PREREQ([2.69])
 AC_INIT([hiredis], [_MAJOR._MINOR._PATCH],
@@ -167,5 +167,5 @@ AC_SUBST([HIREDIS_MINOR],[_MINOR])
 AC_SUBST([HIREDIS_PATCH],[_PATCH])
 AC_SUBST([HIREDIS_VINFO],[_VINFO])
 
-AC_CONFIG_FILES([Makefile hiredis.pc])
+AC_CONFIG_FILES([Makefile hiredis.pc hiredis-version.h])
 AC_OUTPUT

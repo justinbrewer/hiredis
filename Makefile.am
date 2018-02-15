@@ -20,7 +20,7 @@ lib_LTLIBRARIES = libhiredis.la
 libhiredis_la_SOURCES = net.c hiredis.c sds.c async.c read.c
 libhiredis_la_LDFLAGS = $(AM_LDFLAGS) -version-info $(HIREDIS_VINFO)
 
-pkginclude_HEADERS = hiredis.h async.h read.h sds.h
+pkginclude_HEADERS = hiredis.h async.h read.h sds.h hiredis-version.h
 
 adaptersincludedir = $(pkgincludedir)/adapters
 adaptersinclude_HEADERS = adapters/ae.h \

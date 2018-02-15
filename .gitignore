@@ -11,6 +11,7 @@
 /depcomp
 /hiredis-example*
 /hiredis-test
+/hiredis-version.h
 /hiredis.pc
 /install-sh
 /.libs
