@@ -33,6 +33,13 @@ adaptersinclude_HEADERS = adapters/ae.h \
 			  adapters/qt.h
 
 check_PROGRAMS = hiredis-test
+
+hiredis_test_SOURCES = test.c
+hiredis_test_LDADD = libhiredis.la
+
+TESTS = test.sh
+test.sh: hiredis-test
+
 noinst_PROGRAMS = hiredis-example
 
 EXAMPLE_CFLAGS = $(AM_CFLAGS) -I$(srcdir)/adapters
