@@ -26,20 +26,42 @@ addons:
     - libc6-dev-i386
     - libc6-dbg:i386
     - gcc-multilib
+    - g++-multilib
     - valgrind
+    - libevent-dev
+    - libev-dev
+    - libuv-dev
+    - libivykis-dev
+    - libqt4-dev
 
 env:
-    - CFLAGS="-Werror"
-    - PRE="valgrind --track-origins=yes --leak-check=full"
-    - TARGET="32bit" TARGET_VARS="32bit-vars" CFLAGS="-Werror"
-    - TARGET="32bit" TARGET_VARS="32bit-vars" PRE="valgrind --track-origins=yes --leak-check=full"
+    - BITS="32"
+    - BITS="64"
 
-matrix:
-  exclude:
-    - os: osx
-      env: PRE="valgrind --track-origins=yes --leak-check=full"
-
-    - os: osx
-      env: TARGET="32bit" TARGET_VARS="32bit-vars" PRE="valgrind --track-origins=yes --leak-check=full"
-
-script: make $TARGET CFLAGS="$CFLAGS" && make check PRE="$PRE" && make $TARGET_VARS hiredis-example
+script:
+  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then
+      EXAMPLES="macosx";
+      if [ "$BITS" == "32" ]; then
+        CONF_FLAGS="--host=i686-apple-darwin11";
+        CFLAGS="-m32 -Werror";
+        LDFLAGS="-m32";
+      else
+        CFLAGS="-Werror";
+      fi;
+    else
+      CHECK_EXTRA="-valgrind";
+      if [ "$BITS" == "32" ]; then
+        CONF_FLAGS="--host=i686-linux-gnu";
+        CFLAGS="-m32 -Werror";
+        LDFLAGS="-m32";
+      else
+        EXAMPLES="libevent,libev,libuv,ivykis,qt";
+        CFLAGS="-Werror";
+      fi;
+    fi;
+    export CONF_FLAGS CFLAGS LDFLAGS CHECK_EXTRA EXAMPLES
+  - autoreconf -i
+  - mkdir build/ && cd build/
+  - ../configure $CONF_FLAGS --enable-examples=$EXAMPLES
+  - make
+  - make check$CHECK_EXTRA || (grep . test-suite*.log && exit 1)
