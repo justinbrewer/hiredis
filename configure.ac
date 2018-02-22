@@ -9,7 +9,7 @@ AC_PREREQ([2.69])
 AC_INIT([hiredis], [_MAJOR._MINOR._PATCH],
         [https://github.com/redis/hiredis])
 AM_INIT_AUTOMAKE([-Wall -Werror foreign subdir-objects])
-PKG_PROG_PKG_CONFIG([0.28])
+PKG_PROG_PKG_CONFIG
 AC_CONFIG_MACRO_DIR([m4])
 
 PKG_INSTALLDIR
