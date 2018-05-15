@@ -75,28 +75,24 @@ static void __redisSetErrorFromErrno(redisContext *c, int type, const char *pref
     __redisSetError(c,type,buf);
 }
 
-static int redisSetReuseAddr(redisContext *c) {
-    int on = 1;
-    if (setsockopt(c->fd, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on)) == -1) {
-        __redisSetErrorFromErrno(c,REDIS_ERR_IO,NULL);
-        redisContextCloseFd(c);
-        return REDIS_ERR;
-    }
-    return REDIS_OK;
-}
-
 static int redisCreateSocket(redisContext *c, int domain) {
     int s;
     if ((s = socket(domain, SOCK_STREAM, 0)) == -1) {
         __redisSetErrorFromErrno(c,REDIS_ERR_IO,NULL);
         return REDIS_ERR;
     }
+
     c->fd = s;
+
     if (domain == AF_INET) {
-        if (redisSetReuseAddr(c) == REDIS_ERR) {
+        int on = 1;
+        if (setsockopt(s, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on)) == -1) {
+            __redisSetErrorFromErrno(c,REDIS_ERR_IO,"setsockopt");
+            close(s);
             return REDIS_ERR;
         }
     }
+
     return REDIS_OK;
 }
 
