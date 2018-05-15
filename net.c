@@ -85,14 +85,14 @@ static int redisSetReuseAddr(redisContext *c) {
     return REDIS_OK;
 }
 
-static int redisCreateSocket(redisContext *c, int type) {
+static int redisCreateSocket(redisContext *c, int domain) {
     int s;
-    if ((s = socket(type, SOCK_STREAM, 0)) == -1) {
+    if ((s = socket(domain, SOCK_STREAM, 0)) == -1) {
         __redisSetErrorFromErrno(c,REDIS_ERR_IO,NULL);
         return REDIS_ERR;
     }
     c->fd = s;
-    if (type == AF_INET) {
+    if (domain == AF_INET) {
         if (redisSetReuseAddr(c) == REDIS_ERR) {
             return REDIS_ERR;
         }
