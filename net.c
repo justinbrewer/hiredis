@@ -75,14 +75,49 @@ static void __redisSetErrorFromErrno(redisContext *c, int type, const char *pref
     __redisSetError(c,type,buf);
 }
 
+static inline int redisSockType(int type) {
+    return type
+#if defined(SOCK_CLOEXEC)
+        | SOCK_CLOEXEC
+#endif
+        ;
+}
+
+static int redisSetCloexec(redisContext *c) {
+#if !defined(SOCK_CLOEXEC)
+    int flags = fcntl(c->fd, F_GETFD);
+
+    if(flags == -1) {
+        __redisSetErrorFromErrno(c,REDIS_ERR_IO,"fcntl(F_GETFD)");
+        close(c->fd);
+        return REDIS_ERR;
+    }
+
+    flags |= FD_CLOEXEC;
+
+    if(fcntl(c->fd, F_SETFD, flags) == -1) {
+        __redisSetErrorFromErrno(c,REDIS_ERR_IO,"fcntl(F_SETFD)");
+        close(c->fd);
+        return REDIS_ERR;
+    }
+#endif
+
+    return REDIS_OK;
+}
+
 static int redisCreateSocket(redisContext *c, int domain) {
     int s;
-    if ((s = socket(domain, SOCK_STREAM, 0)) == -1) {
-        __redisSetErrorFromErrno(c,REDIS_ERR_IO,NULL);
+
+    if ((s = socket(domain, redisSockType(SOCK_STREAM), 0)) == -1) {
+        __redisSetErrorFromErrno(c,REDIS_ERR_IO,"socket");
         return REDIS_ERR;
     }
 
     c->fd = s;
+
+    if(redisSetCloexec(c) != REDIS_OK) {
+        return REDIS_ERR;
+    }
 
     if (domain == AF_INET) {
         int on = 1;
@@ -356,10 +391,14 @@ static int _redisContextConnectTcp(redisContext *c, const char *addr, int port,
     }
     for (p = servinfo; p != NULL; p = p->ai_next) {
 addrretry:
-        if ((s = socket(p->ai_family,p->ai_socktype,p->ai_protocol)) == -1)
+        if ((s = socket(p->ai_family, redisSockType(p->ai_socktype),
+                        p->ai_protocol)) == -1)
             continue;
 
         c->fd = s;
+
+        if (redisSetCloexec(c) != REDIS_OK)
+            goto error;
         if (redisSetBlocking(c,0) != REDIS_OK)
             goto error;
         if (c->tcp.source_addr) {
