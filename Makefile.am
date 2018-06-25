@@ -9,6 +9,10 @@ if SOLARIS
 AM_LDFLAGS += -ldl -lnsl -lsocket
 endif
 
+if CYGWIN
+AM_LDFLAGS += -no-undefined
+endif
+
 pkgconfig_DATA = hiredis.pc
 
 lib_LTLIBRARIES = libhiredis.la

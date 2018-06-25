@@ -26,10 +26,14 @@ case "${host_os}" in
   solaris*)
     build_solaris=yes
     ;;
+  *cygwin*)
+    build_cygwin=yes
+    ;;
 esac
 
 AM_CONDITIONAL([MACOSX],[test "x$build_macosx" = "xyes"])
 AM_CONDITIONAL([SOLARIS],[test "x$build_solaris" = "xyes"])
+AM_CONDITIONAL([CYGWIN],[test "x$build_cygwin" = "xyes"])
 
 # Checks for programs.
 AC_PROG_AWK
@@ -41,7 +45,7 @@ AC_PROG_MAKE_SET
 AM_PROG_AR
 AC_PROG_SED
 
-LT_INIT
+LT_INIT([win32-dll])
 
 # Checks for header files.
 AC_CHECK_HEADERS([arpa/inet.h fcntl.h limits.h netdb.h netinet/in.h stdint.h stdlib.h string.h strings.h sys/socket.h sys/time.h unistd.h])
