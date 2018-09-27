@@ -29,6 +29,9 @@ case "${host_os}" in
   *cygwin*)
     build_cygwin=yes
     ;;
+  *mingw*)
+    AC_MSG_ERROR([mingw is not a supported platform])
+    ;;
 esac
 
 AM_CONDITIONAL([MACOSX],[test "x$build_macosx" = "xyes"])
