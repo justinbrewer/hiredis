@@ -21,6 +21,7 @@ libhiredis_la_SOURCES = net.c hiredis.c sds.c async.c read.c
 libhiredis_la_LDFLAGS = $(AM_LDFLAGS) -version-info $(HIREDIS_VINFO)
 
 pkginclude_HEADERS = hiredis.h async.h read.h sds.h hiredis-version.h
+noinst_HEADERS = fmacros.h net.h sdsalloc.h dict.h dict.c
 
 adaptersincludedir = $(pkgincludedir)/adapters
 adaptersinclude_HEADERS = adapters/ae.h \
@@ -33,17 +34,16 @@ adaptersinclude_HEADERS = adapters/ae.h \
 			  adapters/qt.h
 
 check_PROGRAMS = hiredis-test
-
 hiredis_test_SOURCES = test.c
 hiredis_test_LDADD = libhiredis.la
 
+dist_check_SCRIPTS = test.sh
 TESTS = test.sh
 test.sh: hiredis-test
 
-noinst_PROGRAMS = hiredis-example
-
 EXAMPLE_CFLAGS = $(AM_CFLAGS) -I$(srcdir)/adapters
 
+noinst_PROGRAMS = hiredis-example
 hiredis_example_SOURCES = examples/example.c
 hiredis_example_LDADD = libhiredis.la
 
@@ -105,9 +105,9 @@ endif
 
 if QT
 noinst_PROGRAMS += hiredis-example-qt
-hiredis_example_qt_SOURCES = examples/example-qt.cpp \
-			     examples/example-qt_moc.cpp \
-			     adapters/qt_moc.cpp
+hiredis_example_qt_SOURCES = examples/example-qt.cpp
+nodist_hiredis_example_qt_SOURCES = examples/example-qt_moc.cpp \
+				    adapters/qt_moc.cpp
 hiredis_example_qt_CXXFLAGS = $(EXAMPLE_CFLAGS) -std=c++11 $(QT_CFLAGS)
 hiredis_example_qt_LDFLAGS = $(AM_LDFLAGS) -std=c++11 $(QT_LIBS)
 hiredis_example_qt_LDADD = libhiredis.la
