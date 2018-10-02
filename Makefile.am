@@ -18,7 +18,7 @@ pkgconfig_DATA = hiredis.pc
 lib_LTLIBRARIES = libhiredis.la
 
 libhiredis_la_SOURCES = net.c hiredis.c sds.c async.c read.c
-libhiredis_la_LDFLAGS = $(AM_LDFLAGS) -version-info $(HIREDIS_VINFO)
+libhiredis_la_LDFLAGS = $(AM_LDFLAGS) -version-number $(HIREDIS_VNUM)
 
 pkginclude_HEADERS = hiredis.h async.h read.h sds.h hiredis-version.h
 noinst_HEADERS = fmacros.h net.h sdsalloc.h dict.h dict.c
